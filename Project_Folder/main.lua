@@ -10,13 +10,29 @@ require (datapath .. "characters")
 require (datapath .. "items")
 require (datapath .. "skills")
 require (datapath .. "battler")
+require (scriptpath .. "menu")
 
 function love.load()
-	debug_mode = false
+
+	monoChromeShader = love.graphics.newShader[[
+    vec4 effect( vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords ){
+	vec4 pixel = Texel(texture, texture_coords );//This is the current pixel color
+	number average = (pixel.r+pixel.b+pixel.g)/3.0;
+	pixel.r = average;
+	pixel.g = average;
+	pixel.b = average;
+	return pixel;
+	}
+	]]
+	
+	
+
 	game_phase = "map"
+	menu_disabled = false
 	map_manage = map_manager:new()
 	new_game_data = Player:new()
 	battle_manage = battle_manager:new(new_game_data)
+	main_menu = menu:new(new_game_data)
 	transition_time = 0
 	
 	local image = love.graphics.newImage('assets/graphics/charachips/character.png')
@@ -30,10 +46,14 @@ function love.load()
 	local image = love.graphics.newImage('assets/graphics/characters/character2_face.png')
 	local player2 = battler:new("Pascelle", image, "player", 10, 10)
 	player2.skills = {fireball, heal, first_aid}
-	--player1.skills = {face_stab, first_aid}
+	player1.skills = {face_stab, first_aid}
 	table.insert(new_game_data.player_party, player1)
 	table.insert(new_game_data.player_party, player2)
 	table.insert(new_game_data.player_party, player3)
+	
+	table.insert(new_game_data.inventory, "potion")
+	table.insert(new_game_data.inventory, "donkey")
+	table.insert(new_game_data.inventory, "skilixer")
 	gridsize = 32
 	battle_manage:set_battleback(love.graphics.newImage('assets/graphics/battleback/Grassland 1.png'))
 	battle_manage:new_battle({goblin:new(), goblin:new(), goblin:new()})
@@ -47,10 +67,23 @@ function love.update(dt)
 			battle_manage:set_battleback(love.graphics.newImage('assets/graphics/battleback/Grassland 1.png'))
 			battle_manage:new_battle({goblin:new()})
 			game_phase = "transition"
-			transition_time = 2
+			transition_time = 1
 			map_manage.steps = 0
+		elseif map_manage:check_for_menu() and not menu_disabled then
+			game_phase = "menu"
 		else
 			map_manage.bgm:resume()
+		end
+	end
+	if game_phase == "menu" then
+		main_menu:update(dt)
+		if love.keyboard.isDown("v") then
+			game_phase = "map"
+			main_menu.index = 1
+			main_menu.index2 = 1
+			main_menu.action = ""
+			main_menu.keypressed = ""
+			main_menu.current_menu = "menu"
 		end
 	end
 	if game_phase == "transition" then
@@ -73,6 +106,12 @@ function love.draw()
 	if game_phase == "map" then
 		map_manage:draw()
 		if love.keyboard.isDown("f3") then draw_debug() end
+	end
+	if game_phase == "menu" then
+		love.graphics.setShader(monoChromeShader)
+		map_manage:draw()
+		love.graphics.setShader()
+		main_menu:draw()
 	end
 	if game_phase == "battle" then
 		battle_manage:draw()
@@ -99,21 +138,27 @@ end
 
 function love.keypressed(key)
 	if key == "up" then
-		battle_manage.keypressed = "up"
+		if game_phase == "battle" then battle_manage.keypressed = "up" end
+		if game_phase == "menu"   then main_menu.keypressed     = "up" end
 	end
 	if key == "down" then
-		battle_manage.keypressed = "down"
+		if game_phase == "battle" then battle_manage.keypressed = "down" end
+		if game_phase == "menu" then main_menu.keypressed = "down" end
 	end
 	if key == "left" then
-		battle_manage.keypressed = "left"
+		if game_phase == "battle" then battle_manage.keypressed = "left" end
+		if game_phase == "menu" then main_menu.keypressed = "left" end
 	end
 	if key == "right" then
-		battle_manage.keypressed = "right"
+		if game_phase == "battle" then battle_manage.keypressed = "right" end
+		if game_phase == "menu" then main_menu.keypressed = "right" end
 	end
 	if key == "z" then
-		battle_manage.keypressed = "z"
+		if game_phase == "battle" then battle_manage.keypressed = "z" end
+		if game_phase == "menu" then main_menu.keypressed = "z" end
 	end
 	if key == "x" then
-		battle_manage.keypressed = "x"
+		if game_phase == "battle" then battle_manage.keypressed = "x" end
+		if game_phase == "menu" then main_menu.keypressed = "x" end
 	end
 end

@@ -47,6 +47,13 @@ function map_manager:check_for_battle(dt)
 	return false
 end
 
+function map_manager:check_for_menu(dt)
+	if love.keyboard.isDown("c") and not self.player.moving then
+		return true
+	end
+	return false
+end
+
 function map_manager:draw()
 	self.map:draw()
 	self.player:draw(self:spriteStyle(self.player.cx, self.player.cy))

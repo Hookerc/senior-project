@@ -154,6 +154,7 @@ function battle_manager:player_turn(actor)
 			if self.index == 4 then
 				self.current_menu = "item"
 				self.index2 = 1
+				self.previous_menu = "menu"
 			end
 			self.index2 = 1
 			self.keypressed = ""
@@ -185,6 +186,29 @@ function battle_manager:player_turn(actor)
 				self.keypressed = ""
 				self.current_menu = "target"
 				self.previous_menu = "skill"
+		end
+		if self.keypressed == "x" then
+			self.current_menu = self.previous_menu
+			self.index2 = 1
+			self.index = 1
+			self.keypressed = ""
+			self.previous_menu = ""
+		end
+	end
+	if self.current_menu == "item" then
+		if self.keypressed == "up" then
+			self.index2 = self.index2 - 1
+			if self.index2 < 1 then self.index2 = #self.player.inventory end
+			self.keypressed = ""
+		end
+		if self.keypressed == "down" then
+			self.index2 = self.index2 + 1
+			if self.index2 > #self.player.inventory then self.index2 = 1 end
+			self.keypressed = ""
+		end
+		if self.keypressed == "z" then
+			--do item stuff
+			self.message_log = "lel naw"
 		end
 		if self.keypressed == "x" then
 			self.current_menu = self.previous_menu

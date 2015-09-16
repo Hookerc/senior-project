@@ -4,7 +4,8 @@ function skill:new(name, target_type)
 	local object = {
 		name = name,
 		target_type = target_type,
-		cost = 5
+		cost = 5,
+		usable_outside = false
 	}
 	
 	setmetatable(object, { __index = skill})
@@ -43,6 +44,7 @@ end
 
 heal = skill:new("Heal", "One_Ally")
 heal.cost = 4
+heal.usable_outside = true
 function heal:use(user, target)
 	target.hp = target.hp + (target.stats.maxhp * .30)
 	user.mp = user.mp - self.cost
@@ -53,6 +55,7 @@ end
 
 first_aid = skill:new("First Aid", "Self")
 first_aid.cost = 4
+first_aid.usable_outside = true
 function first_aid:use(user)
 	user.hp = user.hp + (user.stats.maxhp * .30)
 	user.mp = user.mp - self.cost
