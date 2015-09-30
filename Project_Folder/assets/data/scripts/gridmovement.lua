@@ -166,7 +166,7 @@ function charchip:canGoTo(x, y)
 	if love.keyboard.isDown("x") then
 		return true
 	end
-	if collision.data[y] ~= nil and collision.data[y][x] ~= nil and collision.data[y][x] > 0 then
+	if collision ~= nil and collision.data[y] ~= nil and collision.data[y][x] ~= nil and collision.data[y][x] > 0 then
 		charchip_collide_se:play()
 		return false
 	end

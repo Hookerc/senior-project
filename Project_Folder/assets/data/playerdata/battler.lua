@@ -57,8 +57,8 @@ function goblin:new()
 	object.stats = {
 	maxhp = 1,
 	maxmp = 0,
-	strength = 3,
-	endurance = 2,
+	strength = 6,
+	endurance = 4,
 	intellegence = 1,
 	resistance = 1,
 	dexterity = 4,

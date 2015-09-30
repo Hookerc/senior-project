@@ -11,7 +11,14 @@ require (datapath .. "items")
 require (datapath .. "skills")
 require (datapath .. "battler")
 require (scriptpath .. "menu")
-
+require (scriptpath .. "camera")
+font = love.graphics.newFont(14) -- the number denotes the font size
+menufont = love.graphics.newImageFont("assets/graphics/system/testfont.png",
+    " abcdefghijklmnopqrstuvwxyz" ..
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ0" ..
+    "123456789.,!?-+/():;%&`'*#=[]\"")
+textboxfont = love.graphics.newFont("assets/graphics/fonts/never.ttf", 30)
+battlefont = love.graphics.newFont("assets/graphics/fonts/rpg.ttf", 22)
 function love.load()
 
 	monoChromeShader = love.graphics.newShader[[
@@ -46,17 +53,11 @@ function love.load()
 	local image = love.graphics.newImage('assets/graphics/characters/character2_face.png')
 	local player2 = battler:new("Pascelle", image, "player", 10, 10)
 	player2.skills = {fireball, heal, first_aid}
-	player1.skills = {face_stab, first_aid}
+	--player1.skills = {face_stab, first_aid}
 	table.insert(new_game_data.player_party, player1)
 	table.insert(new_game_data.player_party, player2)
-	table.insert(new_game_data.player_party, player3)
-	
-	table.insert(new_game_data.inventory, "potion")
-	table.insert(new_game_data.inventory, "donkey")
-	table.insert(new_game_data.inventory, "skilixer")
 	gridsize = 32
 	battle_manage:set_battleback(love.graphics.newImage('assets/graphics/battleback/Grassland 1.png'))
-	battle_manage:new_battle({goblin:new(), goblin:new(), goblin:new()})
 end
 
 function love.update(dt) 
@@ -76,8 +77,10 @@ function love.update(dt)
 		end
 	end
 	if game_phase == "menu" then
+		map_manage.bgm:setVolume(0.35)
 		main_menu:update(dt)
 		if love.keyboard.isDown("v") then
+		map_manage.bgm:setVolume(1)
 			game_phase = "map"
 			main_menu.index = 1
 			main_menu.index2 = 1
@@ -162,3 +165,18 @@ function love.keypressed(key)
 		if game_phase == "menu" then main_menu.keypressed = "x" end
 	end
 end
+--[[
+function main_menu:drawParty()
+	for i, k in ipairs(self.player.player_party) do
+		love.graphics.draw(menu_graphic2, 200, (i-1)*100)
+		love.graphics.draw(k.battle_image, 200, (i -1)* 100)
+		love.graphics.draw(menu_graphic1, 200, (i-1)*100)
+	end
+	--information
+	for i, k in ipairs(self.player.player_party) do
+		love.graphics.print(tostring(k.name),200 + k.battle_image:getWidth(), (i -1)* 100 + 10)
+		love.graphics.print( "HP:"..tostring(k.hp) .. "/" .. tostring(k.stats.maxhp), 200 + k.battle_image:getWidth(), (i -1)* 100 + 20)
+		love.graphics.print( "MP:"..tostring(k.mp) .. "/" .. tostring(k.stats.maxmp), 200 + k.battle_image:getWidth(), (i -1)* 100 + 30)
+	end
+end
+]]

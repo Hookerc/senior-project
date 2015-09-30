@@ -1,11 +1,12 @@
+sePath = "assets/audio/se/"
 skill = {}
-
 function skill:new(name, target_type)
 	local object = {
 		name = name,
 		target_type = target_type,
 		cost = 5,
-		usable_outside = false
+		usable_outside = false,
+		se = nil
 	}
 	
 	setmetatable(object, { __index = skill})
@@ -14,10 +15,12 @@ end
 
 attack = skill:new("Attack", "One_Enemy")
 attack.cost = 4
+attack.se = love.audio.newSource(sePath .. "se_hit2.wav")
 function attack:use(user, target)
 	local damage = math.floor((((user.stats.strength * 2) - target.stats.endurance) * ( 100 / (love.math.random(80, 120)))))
 	target.hp = target.hp - damage
 	if target.hp < 0 then target.hp = 0 end
+	self.se:play()
 	return user.name .. " has " .. self.name .. "ed " .. target.name .. " for " .. damage .. " damage!"
 end
 
