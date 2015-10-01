@@ -25,6 +25,10 @@ function charachip:init()
 	self.y = self.py * 32
 end
 
+function charachip:newImage(image)
+	self.image = love.graphics.newImage("assets/graphics/charachips/" .. image)
+end
+
 function charachip:setNewPosition(x,y)
 	self.px = x
 	self.py = y
@@ -38,7 +42,7 @@ function charachip:update(dt)
 end
 
 function charachip:draw()
-	self.animation:draw(self.image, self.x - 32, self.y - 32 -16)
+	self.animation:draw(self.image, self.x - 32, self.y - 32 -12)
 end
 
 function charachip:get_animation()

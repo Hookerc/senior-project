@@ -9,7 +9,7 @@ return {
   tileheight = 32,
   nextobjectid = 7,
   properties = {
-    ["bgm"] = "24 He Rules Us"
+    ["bgm"] = "05 No Way"
   },
   tilesets = {
     {
