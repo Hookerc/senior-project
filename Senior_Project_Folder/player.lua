@@ -6,7 +6,8 @@ function Player:new()
 		playtime = {0, 0, 0},
 		name = "",
 		party = {}, --Character Information
-		charachip = charachip:new("player.png", 4, 4) --Map Information
+		charachip = charachip:new("player.png", 9, 12), --Map Information
+		currentmap = ""
 	}
 	setmetatable (object, {__index = Player})
 	return object

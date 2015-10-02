@@ -9,11 +9,11 @@ function Map_Scene:new(map_name, player)
 	local object = {
 	map = sti.new("assets/maps/" .. map_name),
 	charchips = {}, -- list of all charchips
-	playersteps = 0,
-	encounterlist = {},
+	playersteps = 0, -- a count of the player's steps on the map
+	encounterlist = {}, --a list of possible encounters, which are lists of enemies eg. {{goblin:new(), goblin:new()} {goblin:new(), slime:new()}}
 	player = player,
 	bgm = nil,
-	doors = {}
+	doors = {} --List of objects in layer "Doors", which hold 3 properties, "map" the new map to load, "x" the new player x, and "y" the new player y
 	}
 	setmetatable( object, { __index = Map_Scene } )
 	object:init()
@@ -21,12 +21,12 @@ function Map_Scene:new(map_name, player)
 end
 
 function Map_Scene:init()
-	self.battlesteps = self.map.properties["battlesteps"] or 0
-	self:init_characters()
-	self.encounterlist = {}
-	camera:setBounds(0, 0, self.map.width * 32 -love.graphics.getWidth(), self.map.height * 32 - love.graphics.getHeight())
-	self.bgm = self.map.properties["bgm"]
-	Audio_Manager:new_bgm(self.bgm or "") 
+	self.battlesteps = self.map.properties["battlesteps"] or 0 -- The steps required to be initiate a battle
+	self:init_characters() -- Creates charchips for each object in the layer "NPC"
+	self.encounterlist = {} --sets the encounterlist from map properties
+	camera:setBounds(0, 0, self.map.width * 32 -love.graphics.getWidth(), self.map.height * 32 - love.graphics.getHeight()) --adjusts the camera's bounds to the new map
+	self.bgm = self.map.properties["bgm"] --sets the background music to the file listed in the property "bgm"
+	Audio_Manager:new_bgm(self.bgm or "") --sends the background music to Audio_Manager
 	if self.map.layers["Doors"] ~= nil then -- aligning each door object to the 32x32 grid, and adding it to "self.doors"
 		for i,k in ipairs(self.map.layers["Doors"].objects) do
 			table.insert(self.doors, k)
@@ -50,8 +50,9 @@ function Map_Scene:draw()
 	camera:unset()
 	love.graphics.print("x:" .. math.floor(self.player.charachip.x / 32) .. " y:" .. math.floor(self.player.charachip.y / 32), 0, 30)
 	for i,k in ipairs(self.doors) do
-		love.graphics.print("x:" .. math.floor(k.x / 32) .. " y:" .. math.floor(k.y / 32), 0, 40 + (i * 10))
+		love.graphics.print("x:" .. math.floor(k.x / 32) .. " y:" .. math.floor(k.y / 32), 0, 50 + (i * 10))
 	end
+	love.graphics.print(tostring(self.player.currentmap), 0, 40)
 end
 
 function Map_Scene:check_for_battle()
@@ -67,9 +68,9 @@ function Map_Scene:init_characters()
 	end
 end
 
-function Map_Scene:check_for_transfer()
+function Map_Scene:check_for_transfer(newmap)
 	for _,k in ipairs(self.doors) do
-		if math.floor(k.x / 32) + 1 == math.floor(self.player.charachip.x / 32) and math.floor(k.y / 32) + 1 == math.floor(self.player.charachip.y / 32) then
+		if math.floor(k.x / 32) + 1 == math.floor(self.player.charachip.x / 32) and math.floor(k.y / 32) + 1 == math.floor(self.player.charachip.y / 32) and not newmap then
 			if k.properties["se"] ~= nil then Audio_Manager:new_se(love.audio.newSource(k.properties["se"])) end
 			return k
 		end

@@ -1,6 +1,7 @@
 audio_data_source = "assets/audio/"
 Audio_Manager = {
 		current_bgm = nil,
+		current_bgm_name = nil,
 		se_list = {}
 	}
 
@@ -18,9 +19,13 @@ function Audio_Manager:play()
 end
 
 function Audio_Manager:new_bgm(bgmname)
+	if self.current_bgm_name == bgmname then return end
 	if self.current_bgm ~= nil then self.current_bgm:stop() end
 	if bgmname == "" then self.current_bgm = nil
-	else self.current_bgm = love.audio.newSource(audio_data_source .. "bgm/" .. bgmname.. ".mp3", stream) end
+	else 
+		self.current_bgm = love.audio.newSource(audio_data_source .. "bgm/" .. bgmname.. ".mp3", stream)
+		self.current_bgm_name = bgmname
+	end
 end
 
 function Audio_Manager:new_se(sename)

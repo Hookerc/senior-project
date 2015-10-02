@@ -1,6 +1,6 @@
 local anim8 = require 'anim8'
 charachip = {}
- 
+  
 function charachip:new(image, x, y)
 	local object = {
 		name = name,
@@ -71,14 +71,14 @@ function charachip:get_animation()
 	end
 end
 
-function charachip:move(dt, direction, map)
+function charachip:move(dt, direction, map) --Returns true if finished moving, else false
 	if self.moving then
 		if self.facing == "down" then 
 			self.y = self.y + (self.move_speed * 32 * dt)
 			if self.y > (self.py * 32)then
 				self.y = (self.py * 32)
 				self.moving = false
-				return 1
+				return true
 			end
 		end
 		if self.facing == "left" then 
@@ -86,7 +86,7 @@ function charachip:move(dt, direction, map)
 			if self.x < (self.px * 32)then 
 				self.x = (self.px * 32)
 				self.moving = false
-				return 1
+				return true
 			end
 		end
 		if self.facing == "right" then 
@@ -94,7 +94,7 @@ function charachip:move(dt, direction, map)
 			if self.x > (self.px * 32) then
 				self.x = (self.px * 32)
 				self.moving = false
-				return 1
+				return true
 			end
 		end
 		if self.facing == "up"then 
@@ -102,7 +102,7 @@ function charachip:move(dt, direction, map)
 			if self.y < (self.py * 32) then 
 				self.y = (self.py * 32)
 				self.moving = false
-				return 1
+				return true
 			end
 		end
 	else 
@@ -160,5 +160,5 @@ function charachip:move(dt, direction, map)
 			end
 		end
 	end
-	return 0
+	return false
 end
