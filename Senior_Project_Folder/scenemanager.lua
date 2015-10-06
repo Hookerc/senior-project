@@ -4,9 +4,9 @@ Scene_Manager = {}
 
 function Scene_Manager:new(player)
 	local object = {
-		current_scene = "Map",
 		player = player,
-		loadedmap = false
+		loadedmap = false,
+		scene_stack = {}
 	}
 	
 	setmetatable( object, { __index = Scene_Manager } )
@@ -16,10 +16,11 @@ end
 
 function Scene_Manager:init()
 	self.Map = Map_Scene:new("testmap.lua", self.player)
+	self.scene_stack = {"Map"}
 end
 
 function Scene_Manager:update(dt, keypressed)
-	if self.current_scene == "Map" then self:update_map(dt,keypressed) end	
+	if self.scene_stack[1] == "Map" then self:update_map(dt,keypressed) end	
 end
 
 function Scene_Manager:update_map(dt,keypressed)
@@ -27,7 +28,7 @@ function Scene_Manager:update_map(dt,keypressed)
 	self.Map:update(dt, keypressed) 
 	if self.Map:check_for_battle() then
 		self.Battle = Battle_Scene:new(self.player, {goblin:new(), goblin:new()})
-		self.current_scene = "Battle"
+		self.scene_stack[1] = "Battle"
 	end
 	local newMap = self.Map:check_for_transfer(self.loadedmap)
 	if newMap ~= false and self.player.charachip.moving == false then
@@ -41,5 +42,5 @@ function Scene_Manager:update_map(dt,keypressed)
 end
 
 function Scene_Manager:draw()
-	if self.current_scene == "Map" then	self.Map:draw() end
+	if self.scene_stack[1] == "Map" then	self.Map:draw() end
 end

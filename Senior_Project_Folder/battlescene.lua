@@ -4,35 +4,33 @@ function Battle_Scene:new(player, enemies)
 	local object = {
 		player = player,
 		enemy_party = enemies,
-		phase = "battle_init",
+		state = "battle_init",
 		actor = nil,
 		turn_index = 1,
-		current_menu = nil
+		current_menu = nil,
+		action_stack = {}
 	}	
 	setmetatable( object, { __index = Battle_Scene } )
 	return object
 end
 
 function Battle_Scene:init_battle()
-	self.turn_order = self:make_turn_order()
-	self.actor = self.turn_order[self.turn_index]
+	
 end
 
 function Battle_Scene:update(dt, keypressed)
-	if self.phase == "battle_init" then self:init_battle() end
-	if self.phase == "battle_turn" then self:battle_turn() end
+	if self.state == "command_menu"  then  end
+	if self.state == "command_skill" then  end
+	if self.state == "battle_init"   then self:init_battle() end
+	if self.state == "battle_turn"   then self:battle_turn() end
+end
+
+function Battle_Scene:battle_turn(dt, keypressed)
+	
 end
 
 function Battle_Scene:draw()
 	love.graphics.print("Battle not yet implemented!", 0, 0)
-end
-
-function Battle_Scene:enemy_turn(dt)
-	
-end
-
-function Battle_Scene:player_turn(dt)
-	
 end
 
 function Battle_Scene:drawMenu()

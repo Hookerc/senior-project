@@ -9,9 +9,11 @@ require (scriptpath .. "mapscene")
 require (scriptpath .. "battlescene")
 require (scriptpath .. "camera")
 require (scriptpath .. "audiomanager")
+require (scriptpath .. "shaders")
 
 
 function love.load()
+	
 	game = Game_Manager:new()
 	love.window.setTitle(__title_list[love.math.random(1,#__title_list)])
 end

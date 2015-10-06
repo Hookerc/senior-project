@@ -2,7 +2,7 @@ local sti = require("sti")
 require (scriptpath .. "character")
 require (scriptpath .. "camera")
 require (scriptpath .. "audiomanager")
-
+local testimage = love.graphics.newImage("assets/graphics/system/light.png")
 Map_Scene = {}
 
 function Map_Scene:new(map_name, player)
@@ -46,6 +46,8 @@ function Map_Scene:draw()
 	camera:set()
 	self.map:draw()
 	self.player.charachip:draw()
+	love.graphics.draw(testimage, self.player.charachip.x - testimage:getWidth(), self.player.charachip.y - testimage:getHeight())
+	
 	if self.map.layers["overhead"] ~= nil then self.map.layers["overhead"]:draw() end
 	camera:unset()
 	love.graphics.print("x:" .. math.floor(self.player.charachip.x / 32) .. " y:" .. math.floor(self.player.charachip.y / 32), 0, 30)
