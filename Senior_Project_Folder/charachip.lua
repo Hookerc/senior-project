@@ -1,7 +1,7 @@
 local anim8 = require 'anim8'
 charachip = {}
   
-function charachip:new(image, x, y)
+function charachip:new(image, x, y, size)
 	local object = {
 		name = name,
 		image = love.graphics.newImage("assets/graphics/charachips/" .. image),
@@ -12,7 +12,8 @@ function charachip:new(image, x, y)
 		moving = false,
 		animationpaused = false,
 		direction_change = false,
-		facing = ""
+		facing = "",
+		tile_size = size or 32
 	}
 	setmetatable(object, {__index = charachip})
 	object:init()
@@ -20,9 +21,9 @@ function charachip:new(image, x, y)
 end
 
 function charachip:init()
-	self.animation = anim8.newAnimation(anim8.newGrid(32,32, self.image:getWidth(), self.image:getHeight())('1-3',1, 2,1), 0.2)
-	self.x = self.px * 32
-	self.y = self.py * 32
+	self.animation = anim8.newAnimation(anim8.newGrid(self.image:getWidth() / 3, self.image:getHeight() / 4, self.image:getWidth(), self.image:getHeight())('1-3',1, 2,1), 0.2)
+	self.x = self.px * self.tile_size
+	self.y = self.py * self.tile_size
 end
 
 function charachip:newImage(image)
@@ -32,8 +33,8 @@ end
 function charachip:setNewPosition(x,y)
 	self.px = x
 	self.py = y
-	self.x = x * 32
-	self.y = y * 32
+	self.x = x * self.tile_size
+	self.y = y * self.tile_size
 end
 
 function charachip:update(dt)
@@ -42,24 +43,24 @@ function charachip:update(dt)
 end
 
 function charachip:draw()
-	self.animation:draw(self.image, self.x - 32, self.y - 32 -12)
+	self.animation:draw(self.image, self.x - self.tile_size, self.y - self.tile_size -self.tile_size / 3)
 end
 
 function charachip:get_animation()
 	if self.facing == "down" and self.direction_change then
-		self.animation = anim8.newAnimation(anim8.newGrid(32,32, self.image:getWidth(), self.image:getHeight())('1-3',1, 2,1), 0.2)
+		self.animation = anim8.newAnimation(anim8.newGrid(self.image:getWidth() / 3, self.image:getHeight() / 4, self.image:getWidth(), self.image:getHeight())('1-3',1, 2,1), 0.2)
 		self.direction_change = false
 	end
 	if self.facing == "left" and self.direction_change then
-		self.animation = anim8.newAnimation(anim8.newGrid(32,32, self.image:getWidth(), self.image:getHeight())('1-3',2, 2,2), 0.2)
+		self.animation = anim8.newAnimation(anim8.newGrid(self.image:getWidth() / 3, self.image:getHeight() / 4, self.image:getWidth(), self.image:getHeight())('1-3',2, 2,2), 0.2)
 		self.direction_change = false
 	end
 	if self.facing == "right" and self.direction_change then
-		self.animation = anim8.newAnimation(anim8.newGrid(32,32, self.image:getWidth(), self.image:getHeight())('1-3',3, 2,3), 0.2)
+		self.animation = anim8.newAnimation(anim8.newGrid(self.image:getWidth() / 3, self.image:getHeight() / 4, self.image:getWidth(), self.image:getHeight())('1-3',3, 2,3), 0.2)
 		self.direction_change = false
 	end
 	if self.facing == "up" and self.direction_change then
-		self.animation = anim8.newAnimation(anim8.newGrid(32,32, self.image:getWidth(), self.image:getHeight())('1-3',4, 2,4), 0.2)
+		self.animation = anim8.newAnimation(anim8.newGrid(self.image:getWidth() / 3, self.image:getHeight() / 4, self.image:getWidth(), self.image:getHeight())('1-3',4, 2,4), 0.2)
 		self.direction_change = false
 	end
 	if not self.animationpaused then
@@ -74,33 +75,33 @@ end
 function charachip:move(dt, direction, map) --Returns true if finished moving, else false
 	if self.moving then
 		if self.facing == "down" then 
-			self.y = self.y + (self.move_speed * 32 * dt)
-			if self.y > (self.py * 32)then
-				self.y = (self.py * 32)
+			self.y = self.y + (self.move_speed * self.tile_size * dt)
+			if self.y > (self.py * self.tile_size)then
+				self.y = (self.py * self.tile_size)
 				self.moving = false
 				return true
 			end
 		end
 		if self.facing == "left" then 
-			self.x = self.x - (self.move_speed * 32 * dt)
-			if self.x < (self.px * 32)then 
-				self.x = (self.px * 32)
+			self.x = self.x - (self.move_speed * self.tile_size * dt)
+			if self.x < (self.px * self.tile_size)then 
+				self.x = (self.px * self.tile_size)
 				self.moving = false
 				return true
 			end
 		end
 		if self.facing == "right" then 
-			self.x = self.x + (self.move_speed * 32 * dt)
-			if self.x > (self.px * 32) then
-				self.x = (self.px * 32)
+			self.x = self.x + (self.move_speed * self.tile_size * dt)
+			if self.x > (self.px * self.tile_size) then
+				self.x = (self.px * self.tile_size)
 				self.moving = false
 				return true
 			end
 		end
 		if self.facing == "up"then 
-			self.y = self.y - (self.move_speed * 32 * dt)
-			if self.y < (self.py * 32) then 
-				self.y = (self.py * 32)
+			self.y = self.y - (self.move_speed * self.tile_size * dt)
+			if self.y < (self.py * self.tile_size) then 
+				self.y = (self.py * self.tile_size)
 				self.moving = false
 				return true
 			end

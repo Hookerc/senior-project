@@ -28,7 +28,7 @@ end
 function Game_Manager:draw()
 	self.scene:draw()
 	self.window:draw()
-	love.graphics.print("SessionTime: ".. self.session_time[1] .. " " .. self.session_time[2] .. " " .. math.round(self.session_time[3]),0,20)
+	love.graphics.print("SessionTime: ".. self.session_time[1] .. " " .. self.session_time[2] .. " " .. math.round(self.session_time[3]),0,20) --hour minute second
 end
 
 function Game_Manager:update_time(dt)

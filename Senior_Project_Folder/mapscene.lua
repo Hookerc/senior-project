@@ -21,7 +21,8 @@ function Map_Scene:new(map_name, player)
 end
 
 function Map_Scene:init()
-	self.battlesteps = self.map.properties["battlesteps"] or 0 -- The steps required to be initiate a battle
+	--print("Loaded Map:" .. self.map.name)
+	self.battlesteps = tonumber(self.map.properties["battlesteps"]) or 0 -- The steps required to be initiate a battle
 	self:init_characters() -- Creates charchips for each object in the layer "NPC"
 	self.encounterlist = {} --sets the encounterlist from map properties
 	camera:setBounds(0, 0, self.map.width * 32 -love.graphics.getWidth(), self.map.height * 32 - love.graphics.getHeight()) --adjusts the camera's bounds to the new map
@@ -38,7 +39,7 @@ function Map_Scene:update(dt, keypressed)
 	self.map:update(dt)
 	camera:setPosition(math.floor(self.player.charachip.x - love.graphics.getWidth() / 2), math.floor(self.player.charachip.y - love.graphics.getHeight() / 2))
 	if love.keyboard.isDown("z") then self.player.charachip.move_speed = 6 else self.player.charachip.move_speed = 3 end
-	self.player.charachip:move(dt, keypressed, self)
+	if self.player.charachip:move(dt, keypressed, self) then self.playersteps = self.playersteps + 1 end
 	self.player.charachip:update(dt)
 end
 
@@ -46,15 +47,16 @@ function Map_Scene:draw()
 	camera:set()
 	self.map:draw()
 	self.player.charachip:draw()
-	love.graphics.draw(testimage, self.player.charachip.x - testimage:getWidth(), self.player.charachip.y - testimage:getHeight())
-	
 	if self.map.layers["overhead"] ~= nil then self.map.layers["overhead"]:draw() end
 	camera:unset()
-	love.graphics.print("x:" .. math.floor(self.player.charachip.x / 32) .. " y:" .. math.floor(self.player.charachip.y / 32), 0, 30)
-	for i,k in ipairs(self.doors) do
-		love.graphics.print("x:" .. math.floor(k.x / 32) .. " y:" .. math.floor(k.y / 32), 0, 50 + (i * 10))
+	if debug_mode then
+		love.graphics.print("x:" .. math.floor(self.player.charachip.x / 32) .. " y:" .. math.floor(self.player.charachip.y / 32), 0, 30)
+		for i,k in ipairs(self.doors) do
+			love.graphics.print("x:" .. math.floor(k.x / 32) .. " y:" .. math.floor(k.y / 32), 0, 80 + (i * 10))
+		end
+		love.graphics.print(tostring(self.player.currentmap), 0, 40)
+		love.graphics.print(tostring(self.playersteps) .. "/" .. tostring(self.battlesteps), 0, 50)
 	end
-	love.graphics.print(tostring(self.player.currentmap), 0, 40)
 end
 
 function Map_Scene:check_for_battle()
